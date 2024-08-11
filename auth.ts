@@ -12,7 +12,8 @@ export const {
   handlers: { GET, POST },
   auth,
   signIn,
-  signOut
+  signOut,
+  update
 } = NextAuth({
   pages: {
     signIn: "/auth/login",
@@ -28,30 +29,34 @@ export const {
   },
   callbacks: {
     async signIn({ user, account }) {
-      console.log({
-        user,
-        account
-      })
-
       //Allow OAuth without email verification
       if (account?.provider !== "credentials") return true
 
       const existingUser = await getUserById(user.id)
 
+      console.log({
+        existingUser
+      })
+
       //Prevent sign in without email verification
       if (!existingUser?.emailVerified) return false
 
-      //2FA check
-      // if (existingUser.isTwoFactorEnabled) {
-      //   const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id)
+      // 2FA check
+      if (existingUser.isTwoFactorEnabled) {
+        const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(existingUser.id)
 
-      //   if (!twoFactorConfirmation) return false
+        console.log({
+          existingUser,
+          twoFactorConfirmation
+        })
 
-      //   //Delete the two factor confirmation for next sign in
-      //   await db.twoFactorConfirmation.delete({
-      //     where: { id: twoFactorConfirmation.id }
-      //   })
-      // }
+        if (!twoFactorConfirmation) return false
+
+        //Delete the two factor confirmation for next sign in
+        await db.twoFactorConfirmation.delete({
+          where: { id: twoFactorConfirmation.id }
+        })
+      }
 
       return true
     },
@@ -73,7 +78,6 @@ export const {
 
       return session
     },
-
     async jwt({ token }) {
       if (!token.sub) return token
 

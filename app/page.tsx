@@ -36,7 +36,7 @@ export default function Home() {
         </p>
 
         <div className="mt-12 flex flex-col justify-center gap-y-5 sm:mt-10 sm:flex-row sm:gap-y-0 sm:gap-x-6">
-          <LoginButton>
+          <LoginButton mode="modal" asChild>
             <Button variant="secondary" className="lg">
               Sign In
             </Button>
