@@ -12,8 +12,7 @@ export const {
   handlers: { GET, POST },
   auth,
   signIn,
-  signOut,
-  update
+  signOut
 } = NextAuth({
   pages: {
     signIn: "/auth/login",
@@ -71,7 +70,7 @@ export const {
 
       if (session.user) {
         session.user.name = token.name
-        session.user.email = token.email
+        session.user.email = token.email as string
         session.user.isOAuth = token.isOAuth as boolean
         session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean
       }

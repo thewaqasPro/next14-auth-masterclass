@@ -1,3 +1,5 @@
+import { NextResponse } from "next/server"
+
 import NextAuth from "next-auth"
 import authConfig from "@/auth.config"
 // export { auth as middleware } from "@/auth"
@@ -5,7 +7,7 @@ import { DEFAULT_LOGIN_REDIRECT, apiAuthPrefix, authRoutes, publicRoutes } from 
 
 const { auth } = NextAuth(authConfig)
 
-export default auth(req => {
+export default auth((req, ctx) => {
   const { nextUrl } = req
   const isLoggedIn = !!req.auth
 
@@ -13,13 +15,13 @@ export default auth(req => {
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
   const isAuthRoute = authRoutes.includes(nextUrl.pathname)
 
-  if (isApiAuthRoute) return null
+  if (isApiAuthRoute) return NextResponse.next()
 
   if (isAuthRoute) {
     if (isLoggedIn) {
-      return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl))
+      return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl))
     }
-    return null
+    return NextResponse.next()
   }
 
   if (!isLoggedIn && !isPublicRoute) {
@@ -30,10 +32,11 @@ export default auth(req => {
 
     const encodedCallbackUrl = encodeURIComponent(callbackUrl)
 
-    return Response.redirect(new URL(`/auth/login?callbackUrl=${encodedCallbackUrl}`, nextUrl))
+    return NextResponse.redirect(new URL(`/auth/login?callbackUrl=${encodedCallbackUrl}`, nextUrl))
   }
 
-  return null
+  // Continue to the next handler if logged in
+  return NextResponse.next()
 })
 
 // Optionally, don't invoke Middleware on some paths
