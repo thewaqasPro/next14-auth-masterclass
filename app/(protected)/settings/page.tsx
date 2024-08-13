@@ -24,7 +24,7 @@ const SettingsPage = () => {
 
   const [error, setError] = useState<string | undefined>()
   const [success, setSuccess] = useState<string | undefined>()
-  const { update } = useSession()
+  const { update, status } = useSession()
   const [isPending, startTransition] = useTransition()
 
   const form = useForm<z.infer<typeof SettingsSchema>>({
@@ -38,6 +38,10 @@ const SettingsPage = () => {
       isTwoFactorEnabled: user?.isTwoFactorEnabled || undefined
     }
   })
+
+  if (status === "loading") {
+    return <p>Loading...</p>
+  }
 
   const onSubmit = (values: z.infer<typeof SettingsSchema>) => {
     startTransition(() => {
