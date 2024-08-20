@@ -56,7 +56,7 @@ export const LoginForm = () => {
             setShowTwoFactor(true)
           }
         })
-        .catch(() => setError("Something went wrong!"))
+        .catch(() => setError("Something went wrong! LoginForm"))
     })
   }
 

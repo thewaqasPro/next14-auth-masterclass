@@ -110,7 +110,7 @@ devDependencies:
     specifier: ^5.0.2
     version: 5.0.2
   '@types/node':
-    specifier: ^20
+    specifier: ^20.14.14
     version: 20.14.14
   '@types/react':
     specifier: ^18
@@ -137,7 +137,7 @@ devDependencies:
     specifier: ^3.4.1
     version: 3.4.7
   typescript:
-    specifier: ^5
+    specifier: ^5.5.4
     version: 5.5.4
 
 packages:
